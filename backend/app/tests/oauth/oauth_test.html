@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OAuth Test Page</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #f5f5f5;
+      }
+      .container {
+        background: white;
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+      .step {
+        margin: 20px 0;
+        padding: 15px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+      }
+      button {
+        background: #4285f4;
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        margin: 10px 5px;
+      }
+      button:hover {
+        background: #3367d6;
+      }
+      button:disabled {
+        background: #ccc;
+        cursor: not-allowed;
+      }
+      .success {
+        background: #d4edda;
+        border-color: #c3e6cb;
+        color: #155724;
+      }
+      .error {
+        background: #f8d7da;
+        border-color: #f5c6cb;
+        color: #721c24;
+      }
+      .info {
+        background: #d1ecf1;
+        border-color: #bee5eb;
+        color: #0c5460;
+      }
+      .code-block {
+        background: #f8f9fa;
+        border: 1px solid #e9ecef;
+        border-radius: 4px;
+        padding: 10px;
+        font-family: monospace;
+        white-space: pre-wrap;
+        word-break: break-all;
+        margin: 10px 0;
+      }
+      .hidden {
+        display: none;
+      }
+      .status-message {
+        font-weight: bold;
+        margin: 10px 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>🔐 OAuth Test Page</h1>
+      <p>Test your FastAPI Google OAuth implementation with Supabase backend</p>
+
+      <!-- Status Message -->
+      <div id="statusMessage" class="hidden">
+        <div class="step info">
+          <div class="status-message" id="statusText"></div>
+          <div id="statusDetails" class="code-block hidden"></div>
+        </div>
+      </div>
+
+      <!-- Step 1: Initiate OAuth -->
+      <div class="step" id="step1">
+        <h3>Step 1: Initiate OAuth Login</h3>
+        <p>
+          Click the button to start the Google OAuth flow through your backend:
+        </p>
+        <button id="startOAuth" onclick="startOAuthFlow()">
+          🚀 Start Google OAuth
+        </button>
+        <div id="oauthResult" class="code-block hidden"></div>
+      </div>
+
+      <!-- Step 2: OAuth Result -->
+      <div class="step" id="step2">
+        <h3>Step 2: OAuth Result</h3>
+        <div id="successInfo" class="hidden">
+          <p>✅ OAuth authentication completed successfully!</p>
+          <p>Tokens received from backend!</p>
+          <div id="successDetails" class="code-block"></div>
+        </div>
+      </div>
+
+      <!-- Debug Info -->
+      <div class="step">
+        <h3>🔧 Debug Info</h3>
+        <p>
+          <strong>API Base URL:</strong>
+          <span id="apiBase">http://localhost:8000</span>
+        </p>
+        <p><strong>Current URL:</strong> <span id="currentUrl"></span></p>
+        <p>
+          <strong>OAuth Status:</strong> <span id="oauthStatus">Ready</span>
+        </p>
+        <button onclick="clearAll()">🗑️ Clear All Data</button>
+      </div>
+    </div>
+
+    <script>
+      // Configuration
+      const API_BASE = "http://localhost:8000";
+      const REDIRECT_URL = window.location.href.split("?")[0];
+
+      // Initialize page
+      window.onload = function () {
+        document.getElementById("currentUrl").textContent =
+          window.location.href;
+
+        // Check if we're returning from OAuth with a code (PKCE flow)
+        const urlParams = new URLSearchParams(window.location.search);
+        const code = urlParams.get("code");
+
+        if (code) {
+          exchangeCodeForTokens(code);
+        }
+
+        const hash = window.location.hash;
+        const hashParams = new URLSearchParams(hash.substring(1));
+        if (hashParams.has("access_token")) {
+          showSuccessCallback(hashParams);
+        }
+      };
+
+      function showStatusMessage(message, type = "info", details = "") {
+        const statusMessage = document.getElementById("statusMessage");
+        const statusText = document.getElementById("statusText");
+        const statusDetails = document.getElementById("statusDetails");
+
+        statusMessage.className = `step ${type}`;
+        statusMessage.classList.remove("hidden");
+        statusText.textContent = message;
+
+        if (details) {
+          statusDetails.textContent = details;
+          statusDetails.classList.remove("hidden");
+        } else {
+          statusDetails.classList.add("hidden");
+        }
+      }
+
+      async function startOAuthFlow() {
+        try {
+          document.getElementById("startOAuth").disabled = true;
+          document.getElementById("oauthResult").textContent =
+            "Initiating OAuth flow...";
+          document.getElementById("oauthResult").classList.remove("hidden");
+          document.getElementById("oauthStatus").textContent = "Initiating";
+
+          showStatusMessage("🚀 Starting OAuth flow...", "info");
+
+          const response = await fetch(`${API_BASE}/api/v1/auth/oauth/login`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              provider: "google",
+              redirect_url: REDIRECT_URL,
+            }),
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+            document.getElementById("oauthResult").className =
+              "code-block success";
+            document.getElementById(
+              "oauthResult"
+            ).textContent = `✅ OAuth URL Generated!\n\nRedirecting to Google in 3 seconds...\n\nURL: ${data.auth_url}`;
+
+            showStatusMessage(
+              "✅ OAuth URL generated! Redirecting to Google...",
+              "success",
+              `Redirect URL: ${REDIRECT_URL}`
+            );
+
+            document.getElementById("oauthStatus").textContent =
+              "Redirecting to Google";
+
+            setTimeout(() => {
+              window.location.href = data.auth_url;
+            }, 3000);
+          } else {
+            throw new Error(`HTTP ${response.status}: ${JSON.stringify(data)}`);
+          }
+        } catch (error) {
+          document.getElementById("oauthResult").className = "code-block error";
+          document.getElementById(
+            "oauthResult"
+          ).textContent = `❌ Error: ${error.message}`;
+          document.getElementById("startOAuth").disabled = false;
+          document.getElementById("oauthStatus").textContent = "Error";
+          showStatusMessage(
+            "❌ OAuth initiation failed",
+            "error",
+            error.message
+          );
+        }
+      }
+
+      function showSuccessCallback(params) {
+        const successInfo = document.getElementById("successInfo");
+        const successDetails = document.getElementById("successDetails");
+
+        successInfo.classList.remove("hidden");
+        document.getElementById("step2").className = "step success";
+        document.getElementById("oauthStatus").textContent = "Success";
+
+        const tokens = {};
+        for (const [key, value] of params.entries()) {
+          tokens[key] = value;
+        }
+
+        successDetails.textContent = `OAuth Success - Tokens Received:\n\n${JSON.stringify(
+          tokens,
+          null,
+          2
+        )}`;
+
+        showStatusMessage(
+          "🎉 OAuth Authentication Successful!",
+          "success",
+          `Tokens received from your backend! OAuth flow completed successfully.`
+        );
+
+        window.history.replaceState(
+          {},
+          document.title,
+          window.location.pathname
+        );
+      }
+
+      async function exchangeCodeForTokens(code) {
+        try {
+          document.getElementById("oauthStatus").textContent =
+            "Exchanging Code";
+          showStatusMessage(
+            "🔄 Exchanging authorization code for tokens...",
+            "info"
+          );
+
+          const requestBody = {
+            provider: "google",
+            code: code,
+            redirect_url: REDIRECT_URL,
+          };
+
+          const response = await fetch(
+            `${API_BASE}/api/v1/auth/oauth/callback`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(requestBody),
+            }
+          );
+
+          const data = await response.json();
+
+          if (response.ok) {
+            const fakeParams = new URLSearchParams();
+            fakeParams.set("access_token", data.token.access_token);
+            fakeParams.set("refresh_token", data.token.refresh_token);
+            fakeParams.set("token_type", data.token.token_type);
+
+            showSuccessCallback(fakeParams);
+          } else {
+            throw new Error(`HTTP ${response.status}: ${JSON.stringify(data)}`);
+          }
+        } catch (error) {
+          document.getElementById("oauthStatus").textContent = "Error";
+          showStatusMessage("❌ Token exchange failed", "error", error.message);
+        }
+      }
+
+      function clearAll() {
+        document.getElementById("startOAuth").disabled = false;
+        document.getElementById("oauthResult").classList.add("hidden");
+        document.getElementById("successInfo").classList.add("hidden");
+        document.getElementById("statusMessage").classList.add("hidden");
+        document.getElementById("oauthStatus").textContent = "Ready";
+
+        document.getElementById("step1").className = "step";
+        document.getElementById("step2").className = "step";
+
+        const url = new URL(window.location);
+        url.search = "";
+        url.hash = "";
+        window.history.replaceState({}, document.title, url);
+      }
+    </script>
+  </body>
+</html>
