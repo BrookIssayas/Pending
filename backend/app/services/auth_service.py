@@ -5,6 +5,7 @@ from app.core.constants import OAuth, Supabase
 from app.core.messages import ErrorMessages, LogMessages
 from app.core.supabase_client import get_supabase_client
 from app.schemas.auth import UserCreate, UserLogin
+from app.services.db_service import get_db_service
 
 logger = logging.getLogger(__name__)
 
@@ -14,6 +15,7 @@ class AuthService:
 
     def __init__(self) -> None:
         self.client = get_supabase_client()
+        self.db_service = get_db_service()
 
     async def signup(self, user_data: UserCreate) -> dict[str, Any]:
         """Register a new user in Supabase Auth"""
@@ -95,7 +97,13 @@ class AuthService:
 
         # Let Supabase handle PKCE internally - just pass the redirect URL
         auth_response = self.client.auth.sign_in_with_oauth(
-            {"provider": "google", "options": {"redirect_to": redirect_url}}
+            {
+                "provider": "google",
+                "options": {
+                    "redirect_to": redirect_url,
+                    "scopes": "https://www.googleapis.com/auth/gmail.readonly",
+                },
+            }
         )
 
         return {"auth_url": auth_response.url}
@@ -117,6 +125,22 @@ class AuthService:
 
             if not auth_response.user or not auth_response.session:
                 raise ValueError("Failed to exchange code for session")
+
+            user = auth_response.user
+            session = auth_response.session
+
+            # Extract Google OAuth provider tokens
+            provider_token = session.provider_token
+            provider_refresh_token = session.provider_refresh_token
+
+            # Store provider tokens in the dedicated, isolated database table
+            if provider_token:
+                await get_db_service().upsert_provider_token(
+                    user_id=user.id,
+                    provider=provider,
+                    access_token=provider_token,
+                    refresh_token=provider_refresh_token,
+                )
 
             logger.info(
                 LogMessages.USER_LOGGED_IN.format(user_id=auth_response.user.id)

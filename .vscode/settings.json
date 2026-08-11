@@ -1,5 +1,6 @@
 {
     "cSpell.words": [
         "Supabase"
-    ]
+    ],
+    "python-envs.defaultEnvManager": "ms-python.python:venv"
 }
