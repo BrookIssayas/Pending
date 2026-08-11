@@ -102,6 +102,10 @@ class AuthService:
                 "options": {
                     "redirect_to": redirect_url,
                     "scopes": "https://www.googleapis.com/auth/gmail.readonly",
+                    "query_params": {
+                        "access_type": "offline",
+                        "prompt": "consent",
+                    },
                 },
             }
         )
