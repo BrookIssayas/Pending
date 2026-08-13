@@ -14,6 +14,30 @@ class DBService:
         """Initializes the DBService."""
         self.client = get_supabase_client()
 
+    async def get_provider_token(
+        self, user_id: str, provider: str
+    ) -> Optional[dict]:
+        """Retrieves a provider token for a user."""
+
+        try:
+            response = (
+                self.client.table("user_provider_tokens")
+                .select("*")
+                .eq("user_id", user_id)
+                .eq("provider", provider)
+                .maybe_single()
+                .execute()
+            )
+            if response is None or response.data is None:
+                return None
+            return response.data
+        except Exception as e:
+            logger.error(
+                f"Error fetching provider token for user {user_id}, "
+                f"provider {provider}: {e!s}"
+            )
+            raise
+        
     async def upsert_provider_token(
         self,
         user_id: str,
@@ -21,30 +45,20 @@ class DBService:
         access_token: str,
         refresh_token: Optional[str] = None,
     ) -> APIResponse:
-        """
-        Upserts a provider token for a user.
+        """Upserts a provider token for a user."""
 
-        Args:
-            user_id: The ID of the user.
-            provider: The OAuth provider (e.g., 'google').
-            access_token: The access token.
-            refresh_token: The refresh token (optional).
-
-        Returns:
-            The API response from the database operation.
-        """
         try:
+            payload = {
+                "user_id": user_id,
+                "provider": provider,
+                "access_token": access_token,
+            }
+            if refresh_token is not None:
+                payload["refresh_token"] = refresh_token
+
             response = (
                 self.client.table("user_provider_tokens")
-                .upsert(
-                    {
-                        "user_id": user_id,
-                        "provider": provider,
-                        "access_token": access_token,
-                        "refresh_token": refresh_token,
-                    },
-                    on_conflict="user_id",
-                )
+                .upsert(payload, on_conflict="user_id")
                 .execute()
             )
             logger.info(f"Successfully upserted token for user {user_id}")

@@ -26,6 +26,10 @@ class Settings(BaseSettings):
     SUPABASE_KEY: str = ""
     SUPABASE_JWT_SECRET: str = ""
 
+    # Google Client
+    GOOGLE_CLIENT_ID: str = ""
+    GOOGLE_CLIENT_SECRET: str = ""
+
     # Application Settings
     LOG_LEVEL: str = Defaults.LOG_LEVEL
 
