@@ -1,7 +1,7 @@
 import logging
 from typing import Optional
 
-from app.core.supabase_client import get_supabase_client
+from app.core.supabase_client import get_supabase_admin_client
 from postgrest import APIResponse
 
 logger = logging.getLogger(__name__)
@@ -12,7 +12,7 @@ class DBService:
 
     def __init__(self) -> None:
         """Initializes the DBService."""
-        self.client = get_supabase_client()
+        self.client = get_supabase_admin_client()
 
     async def get_provider_token(
         self, user_id: str, provider: str

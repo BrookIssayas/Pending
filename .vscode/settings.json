@@ -1,5 +1,6 @@
 {
     "cSpell.words": [
+        "googleapiclient",
         "Supabase"
     ],
     "python-envs.defaultEnvManager": "ms-python.python:venv"
