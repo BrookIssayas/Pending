@@ -37,28 +37,8 @@ class GoogleAuthService:
             token_uri="https://oauth2.googleapis.com/token",
             client_id=settings.GOOGLE_CLIENT_ID,
             client_secret=settings.GOOGLE_CLIENT_SECRET,
-            scopes=["https://www.googleapis.com/auth/gmail.readonly"],
+            scopes=["https://www.googleapis.com/auth/gmail.readonly"]
         )
-
-        if credentials.expired and credentials.refresh_token:
-            logger.info(f"Refreshing Google token for user {self.user_id}")
-            loop = asyncio.get_running_loop()
-            try:
-                await loop.run_in_executor(None, credentials.refresh, Request())
-            except RefreshError as e:
-                logger.warning(
-                    f"Google token refresh failed for user {self.user_id} "
-                    f"(likely revoked): {e!s}"
-                )
-                return None
-
-            await self.db_service.upsert_provider_token(
-                user_id=self.user_id,
-                provider=OAuth.GOOGLE,
-                access_token=credentials.token,
-                refresh_token=credentials.refresh_token,
-            )
-            logger.info(f"Refreshed and saved Google token for user {self.user_id}")
 
         return credentials
 

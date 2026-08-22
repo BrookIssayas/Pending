@@ -31,6 +31,9 @@ class Settings(BaseSettings):
     GOOGLE_CLIENT_ID: str = ""
     GOOGLE_CLIENT_SECRET: str = ""
 
+    # Gemini
+    GEMINI_API_KEY: str = ""
+
     # Application Settings
     LOG_LEVEL: str = Defaults.LOG_LEVEL
 

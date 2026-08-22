@@ -1,11 +1,15 @@
 import asyncio
 import logging
 import time
+import base64
 from datetime import datetime, timedelta
 from typing import Optional
+import html2text
+import re
 
 from googleapiclient.discovery import Resource
 from googleapiclient.errors import HttpError
+from google.auth.exceptions import RefreshError
 
 from app.services.google_auth_service import GoogleAuthService
 
@@ -18,6 +22,34 @@ MAX_RETRIES = 3
 INITIAL_RETRY_DELAY = 2.0
 
 RETRYABLE_STATUSES = {429, 500, 502, 503, 504}
+
+def html_to_text(html):
+    h = html2text.HTML2Text()
+    h.ignore_links = True
+    h.ignore_images = True
+    h.body_width = 0
+    text = h.handle(html)
+
+    INVISIBLE_CHARS = re.compile(
+        '['
+        '\u200a-\u200f'   # zero-width space, ZWNJ, ZWJ, LRM, RLM
+        '\u2060-\u2064'   # word joiner, invisible operators
+        '\u034f'          # combining grapheme joiner
+        '\ufeff'          # BOM / zero-width no-break space
+        '\u00ad'          # soft hyphen
+        ']'
+    )
+
+    text = INVISIBLE_CHARS.sub('', text)
+    text = re.sub(r'https?://\S+', '', text)
+    text = re.sub(r'[<>]', '', text)
+    text = re.sub(r'\s+', ' ', text).strip()[:500]
+    return text
+
+def base64url_decode(payload):
+    # Decode using the URL-safe method
+    decoded_bytes = base64.urlsafe_b64decode(payload)
+    return decoded_bytes.decode('utf-8')
 
 class GmailService:
     """Service for interacting with the Gmail API."""
@@ -61,7 +93,7 @@ class GmailService:
 
         def _list_all() -> list[str]:
             ids = []
-            request = self.service.users().messages().list(userId="me", q=query, maxResults=500)
+            request = self.service.users().messages().list(userId="me", q=query, maxResults=500, includeSpamTrash=False)
             while request is not None:
                 response = request.execute()
                 ids.extend(m["id"] for m in response.get("messages", []))
@@ -72,6 +104,12 @@ class GmailService:
             return await asyncio.to_thread(_list_all)
         except HttpError as error:
             logger.error("Error listing messages for user %s: %s", self.user_id, error)
+            return []
+        except RefreshError as error:
+            logger.warning(
+                "Google token refresh failed for user %s (likely revoked): %s",
+                self.user_id, error,
+            )
             return []
 
     async def _fetch_messages_in_batches(self, message_ids: list[str]) -> tuple[list[dict], list[str]]:
@@ -134,6 +172,25 @@ class GmailService:
         return fetched, retryable_failures, permanent_failures
 
     @staticmethod
+    def get_message_body(payload):
+        """Recursively find text/plain, fall back to text/html."""
+        if payload.get("mimeType") == "text/plain" and payload.get("body", {}).get("data"):
+            return base64url_decode(payload["body"]["data"]), "plain"
+
+        if payload.get("mimeType") == "text/html" and payload.get("body", {}).get("data"):
+            return base64url_decode(payload["body"]["data"]), "html"
+
+        plain_fallback = None
+        for part in payload.get("parts", []) or []:
+            body, kind = GmailService.get_message_body(part)
+            if kind == "plain":
+                return body, "plain"
+            if kind == "html" and plain_fallback is None:
+                return html_to_text(body), "html"
+
+        return plain_fallback, "html" if plain_fallback else None
+
+    @staticmethod
     def _is_retryable_error(exception: Exception) -> bool:
         if not isinstance(exception, HttpError):
             return False
@@ -161,10 +218,10 @@ if __name__ == "__main__":
 
     async def main():
         print("Initializing GmailService...")
-        gmail_service_instance = await GmailService.create(user_id="97345709-7b19-48a6-bfc7-0079aeabb946")
+        gmail_service_instance = await GmailService.create(user_id="2b18980d-9033-4dbb-9ac7-b39c76c8883a")
         print("GmailService initialized successfully and service client obtained.")
         try:
-            messages = await gmail_service_instance.get_user_messages(datetime.now() - timedelta(days=7))
+            messages = await gmail_service_instance.get_user_messages(datetime.now() - timedelta(days=1))
             for x in messages:
                 print(x["snippet"])
         except Exception as e:
