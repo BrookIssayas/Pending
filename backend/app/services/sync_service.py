@@ -6,7 +6,7 @@ from app.core.supabase_client import get_supabase_admin_client
 
 logger = logging.getLogger(__name__)
 
-DEFAULT_BACKFILL_DAYS = 7  # how far back to look for users with no prior sync
+DEFAULT_BACKFILL_DAYS = 15  # how far back to look for users with no prior sync
 
 
 class UserEmailSyncStateService:
@@ -37,7 +37,9 @@ class UserEmailSyncStateService:
             row = None
 
         if row and row.get("last_synced_at"):
-            return datetime.fromisoformat(row["last_synced_at"])
+            # TODO: CHANGE FOR RELEASE, CURRENTLY FOR TESTING PURPOSES
+            # return datetime.fromisoformat(row["last_synced_at"])
+            return datetime.now(timezone.utc) - timedelta(days=DEFAULT_BACKFILL_DAYS)
 
         # No prior sync — first run for this user, backfill a default window
         return datetime.now(timezone.utc) - timedelta(days=DEFAULT_BACKFILL_DAYS)

@@ -90,7 +90,7 @@ class GmailService:
 
     async def _list_message_ids(self, query: str) -> list[str]:
         """Paginate messages.list to collect all matching message IDs."""
-
+        
         def _list_all() -> list[str]:
             ids = []
             request = self.service.users().messages().list(userId="me", q=query, maxResults=500, includeSpamTrash=False)
@@ -210,21 +210,3 @@ class GmailService:
                 reason = "unknown"
             return f"status={exception.resp.status} reason={reason}"
         return f"{type(exception).__name__}: {exception}"
-
-# --- Main Execution (for testing) ---
-
-if __name__ == "__main__":
-    import asyncio
-
-    async def main():
-        print("Initializing GmailService...")
-        gmail_service_instance = await GmailService.create(user_id="2b18980d-9033-4dbb-9ac7-b39c76c8883a")
-        print("GmailService initialized successfully and service client obtained.")
-        try:
-            messages = await gmail_service_instance.get_user_messages(datetime.now() - timedelta(days=1))
-            for x in messages:
-                print(x["snippet"])
-        except Exception as e:
-            print(f"Error during test API call via GmailService: {e}")
-
-    asyncio.run(main())
