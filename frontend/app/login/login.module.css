@@ -1,0 +1,63 @@
+.wrap {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.panel {
+  max-width: 420px;
+  text-align: left;
+}
+
+.eyebrow {
+  font-family: var(--font-board);
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--board-ink-dim);
+  margin: 0 0 8px;
+}
+
+.wordmark {
+  font-family: var(--font-board);
+  font-size: 64px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  margin: 0 0 16px;
+  line-height: 1;
+}
+
+.tagline {
+  font-size: 16px;
+  color: var(--board-ink-dim);
+  line-height: 1.5;
+  margin: 0 0 32px;
+}
+
+.button {
+  font-family: var(--font-board);
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  background: var(--board-panel);
+  border: 1px solid var(--board-line);
+  color: var(--board-ink);
+  padding: 14px 24px;
+  transition: background 120ms ease, border-color 120ms ease;
+}
+
+.button:hover:not(:disabled) {
+  background: var(--board-panel-hover);
+  border-color: var(--accent-progress);
+}
+
+.button:focus-visible {
+  outline: 2px solid var(--accent-progress);
+  outline-offset: 2px;
+}
+
+.button:disabled {
+  opacity: 0.6;
+  cursor: default;
+}

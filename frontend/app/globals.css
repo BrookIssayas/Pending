@@ -1,0 +1,46 @@
+:root {
+  --board-bg: #12141a;
+  --board-panel: #1b1e26;
+  --board-panel-hover: #22262f;
+  --board-ink: #edeae0;
+  --board-ink-dim: #8a8f99;
+  --board-line: #2a2e38;
+
+  --accent-progress: #e8a33d;
+  --accent-positive: #4fa97a;
+  --accent-negative: #c4574b;
+  --accent-neutral: #7c818c;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+  background: var(--board-bg);
+  color: var(--board-ink);
+}
+
+body {
+  font-family: var(--font-body), system-ui, sans-serif;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+a {
+  color: inherit;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

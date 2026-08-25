@@ -1,0 +1,211 @@
+/*!****************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[14].oneOf[5].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[14].oneOf[5].use[3]!./components/StatusTabs.module.css ***!
+  \****************************************************************************************************************************************************************************************************************************************************************************/
+.StatusTabs_tabs__EtvAy {
+  display: flex;
+  gap: 24px;
+  border-bottom: 1px solid var(--board-line);
+  margin-bottom: 8px;
+  overflow-x: auto;
+}
+
+.StatusTabs_tab__CxXxM {
+  font-family: var(--font-board);
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  background: none;
+  border: none;
+  color: var(--board-ink-dim);
+  padding: 0 0 12px;
+  position: relative;
+  white-space: nowrap;
+}
+
+.StatusTabs_tab__CxXxM:focus-visible {
+  outline: 2px solid var(--accent-progress);
+  outline-offset: 2px;
+}
+
+.StatusTabs_active__Vxwrs {
+  color: var(--board-ink);
+}
+
+.StatusTabs_active__Vxwrs::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2px;
+  background: var(--accent-progress);
+}
+
+/*!***************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[14].oneOf[5].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[14].oneOf[5].use[3]!./components/SplitFlap.module.css ***!
+  \***************************************************************************************************************************************************************************************************************************************************************************/
+.SplitFlap_board__wqDQ3 {
+  display: inline-flex;
+  gap: 2px;
+  font-family: var(--font-board);
+  font-weight: 700;
+  font-size: 11px;
+}
+
+.SplitFlap_tile__6jlOL {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 13px;
+  height: 19px;
+  background: var(--board-panel);
+  border: 1px solid var(--board-line);
+  border-radius: 2px;
+  color: currentColor;
+}
+
+/*!********************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[14].oneOf[5].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[14].oneOf[5].use[3]!./components/ApplicationRow.module.css ***!
+  \********************************************************************************************************************************************************************************************************************************************************************************/
+.ApplicationRow_row__24OP4 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  padding: 18px 0;
+  border-bottom: 1px solid var(--board-line);
+  animation: ApplicationRow_rise__s_WYR 260ms ease both;
+}
+
+@keyframes ApplicationRow_rise__s_WYR {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.ApplicationRow_info__wDdhJ {
+  min-width: 0;
+}
+
+.ApplicationRow_company__00M74 {
+  font-family: var(--font-board);
+  font-size: 15px;
+  letter-spacing: 0.06em;
+  margin: 0 0 4px;
+}
+
+.ApplicationRow_role__ior85 {
+  font-size: 13px;
+  color: var(--board-ink-dim);
+  margin: 0;
+}
+
+.ApplicationRow_meta__DBlam {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-shrink: 0;
+}
+
+.ApplicationRow_date__d__sr {
+  font-family: var(--font-board);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: var(--board-ink-dim);
+  display: none;
+}
+
+@media (min-width: 560px) {
+  .ApplicationRow_date__d__sr {
+    display: inline;
+  }
+}
+
+.ApplicationRow_neutral__d_Nsq {
+  color: var(--accent-neutral);
+}
+
+.ApplicationRow_progress__LUrr8 {
+  color: var(--accent-progress);
+}
+
+.ApplicationRow_negative__aBUNt {
+  color: var(--accent-negative);
+}
+
+.ApplicationRow_positive__7Zy5A {
+  color: var(--accent-positive);
+}
+
+/*!******************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[14].oneOf[5].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[14].oneOf[5].use[3]!./app/dashboard/dashboard.module.css ***!
+  \******************************************************************************************************************************************************************************************************************************************************************************/
+.dashboard_wrap__A_HUY {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 40px 24px 80px;
+}
+
+.dashboard_header__IYRHh {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 32px;
+}
+
+.dashboard_eyebrow__G7451 {
+  font-family: var(--font-board);
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--board-ink-dim);
+  margin: 0 0 4px;
+}
+
+.dashboard_wordmark__Jrzj7 {
+  font-family: var(--font-board);
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  margin: 0;
+}
+
+.dashboard_signOut__UcHMW {
+  font-family: var(--font-board);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  background: none;
+  border: 1px solid var(--board-line);
+  color: var(--board-ink-dim);
+  padding: 8px 14px;
+  margin-top: 4px;
+  transition: color 120ms ease, border-color 120ms ease;
+}
+
+.dashboard_signOut__UcHMW:hover {
+  color: var(--board-ink);
+  border-color: var(--board-ink-dim);
+}
+
+.dashboard_signOut__UcHMW:focus-visible {
+  outline: 2px solid var(--accent-progress);
+  outline-offset: 2px;
+}
+
+.dashboard_board__1IsC7 {
+  border-top: 1px solid var(--board-line);
+}
+
+.dashboard_message__hMjJN {
+  font-family: var(--font-board);
+  font-size: 13px;
+  letter-spacing: 0.15em;
+  color: var(--board-ink-dim);
+  padding: 40px 0;
+  text-align: center;
+}
+

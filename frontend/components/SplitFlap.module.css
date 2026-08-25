@@ -1,0 +1,19 @@
+.board {
+  display: inline-flex;
+  gap: 2px;
+  font-family: var(--font-board);
+  font-weight: 700;
+  font-size: 11px;
+}
+
+.tile {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 13px;
+  height: 19px;
+  background: var(--board-panel);
+  border: 1px solid var(--board-line);
+  border-radius: 2px;
+  color: currentColor;
+}

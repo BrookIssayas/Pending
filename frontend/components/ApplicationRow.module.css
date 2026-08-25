@@ -1,0 +1,74 @@
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  padding: 18px 0;
+  border-bottom: 1px solid var(--board-line);
+  animation: rise 260ms ease both;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.info {
+  min-width: 0;
+}
+
+.company {
+  font-family: var(--font-board);
+  font-size: 15px;
+  letter-spacing: 0.06em;
+  margin: 0 0 4px;
+}
+
+.role {
+  font-size: 13px;
+  color: var(--board-ink-dim);
+  margin: 0;
+}
+
+.meta {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-shrink: 0;
+}
+
+.date {
+  font-family: var(--font-board);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: var(--board-ink-dim);
+  display: none;
+}
+
+@media (min-width: 560px) {
+  .date {
+    display: inline;
+  }
+}
+
+.neutral {
+  color: var(--accent-neutral);
+}
+
+.progress {
+  color: var(--accent-progress);
+}
+
+.negative {
+  color: var(--accent-negative);
+}
+
+.positive {
+  color: var(--accent-positive);
+}

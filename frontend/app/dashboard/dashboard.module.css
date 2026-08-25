@@ -1,0 +1,64 @@
+.wrap {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 40px 24px 80px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 32px;
+}
+
+.eyebrow {
+  font-family: var(--font-board);
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--board-ink-dim);
+  margin: 0 0 4px;
+}
+
+.wordmark {
+  font-family: var(--font-board);
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  margin: 0;
+}
+
+.signOut {
+  font-family: var(--font-board);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  background: none;
+  border: 1px solid var(--board-line);
+  color: var(--board-ink-dim);
+  padding: 8px 14px;
+  margin-top: 4px;
+  transition: color 120ms ease, border-color 120ms ease;
+}
+
+.signOut:hover {
+  color: var(--board-ink);
+  border-color: var(--board-ink-dim);
+}
+
+.signOut:focus-visible {
+  outline: 2px solid var(--accent-progress);
+  outline-offset: 2px;
+}
+
+.board {
+  border-top: 1px solid var(--board-line);
+}
+
+.message {
+  font-family: var(--font-board);
+  font-size: 13px;
+  letter-spacing: 0.15em;
+  color: var(--board-ink-dim);
+  padding: 40px 0;
+  text-align: center;
+}
