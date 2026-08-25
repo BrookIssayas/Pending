@@ -95,6 +95,19 @@ class JobApplicationRepository:
                 "Failed to record event for message %s (user %s): %s",
                 gmail_message_id, user_id, error,
             )
+    async def get_applications_for_user(self, user_id: str, status: str | None = None) -> list[dict]:
+        def _query():
+            query = self.client.table("job_applications").select("*").eq("user_id", user_id)
+            if status:
+                query = query.eq("status", status)
+            response = query.order("last_email_at", desc=True).execute()
+            return response.data
+
+        try:
+            return await asyncio.to_thread(_query)
+        except Exception as error:
+            logger.error("Failed to fetch applications for user %s: %s", user_id, error)
+            return []
 
 def get_job_app_repo() -> JobApplicationRepository:
     return JobApplicationRepository()

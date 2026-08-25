@@ -37,9 +37,7 @@ class UserEmailSyncStateService:
             row = None
 
         if row and row.get("last_synced_at"):
-            # TODO: CHANGE FOR RELEASE, CURRENTLY FOR TESTING PURPOSES
-            # return datetime.fromisoformat(row["last_synced_at"])
-            return datetime.now(timezone.utc) - timedelta(days=DEFAULT_BACKFILL_DAYS)
+            return datetime.fromisoformat(row["last_synced_at"])
 
         # No prior sync — first run for this user, backfill a default window
         return datetime.now(timezone.utc) - timedelta(days=DEFAULT_BACKFILL_DAYS)
