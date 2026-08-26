@@ -16,7 +16,7 @@ Fill in `.env.local`:
 - `NEXT_PUBLIC_SUPABASE_URL` / `NEXT_PUBLIC_SUPABASE_ANON_KEY` — from your
   Supabase project's API settings (the **anon** public key, not the service
   role key).
-- `NEXT_PUBLIC_API_BASE_URL` — your FastAPI backend's base URL, including the
+- `API_BASE_URL` — your FastAPI backend's base URL, including the
   `/api/v1` prefix (e.g. `http://localhost:8000/api/v1`).
 
 ```bash

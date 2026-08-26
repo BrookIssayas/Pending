@@ -1,4 +1,4 @@
-// File: C:\Users\Beruck Brook\TBD\frontend\app\login\page.tsx
+// File: /home/ekinlenh/Desktop/Job-Tracker/TBD/frontend/app/login/page.tsx
 import * as entry from '../../../../app/login/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

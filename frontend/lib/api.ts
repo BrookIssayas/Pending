@@ -1,9 +1,9 @@
 import { supabase } from "./supabase-client";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+const API_BASE_URL = process.env.API_BASE_URL;
 
 if (!API_BASE_URL) {
-  throw new Error("Missing NEXT_PUBLIC_API_BASE_URL. Check .env.local.");
+  throw new Error("Missing API_BASE_URL. Check .env.local.");
 }
 
 export type ApplicationStatus =

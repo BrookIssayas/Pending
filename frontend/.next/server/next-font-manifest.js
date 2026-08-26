@@ -1,1 +1,1 @@
-self.__NEXT_FONT_MANIFEST="{\"pages\":{},\"app\":{},\"appUsingSizeAdjust\":false,\"pagesUsingSizeAdjust\":false}"
+self.__NEXT_FONT_MANIFEST='{"pages":{},"app":{"/home/ekinlenh/Desktop/Job-Tracker/TBD/frontend/app/layout":["static/media/806de4d605d3ad01-s.p.woff2","static/media/fc727f226c737876-s.p.woff2","static/media/26d4368bf94c0ec4-s.p.woff2"]},"appUsingSizeAdjust":true,"pagesUsingSizeAdjust":false}';

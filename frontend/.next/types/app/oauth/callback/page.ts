@@ -1,4 +1,4 @@
-// File: C:\Users\Beruck Brook\TBD\frontend\app\oauth\callback\page.tsx
+// File: /home/ekinlenh/Desktop/Job-Tracker/TBD/frontend/app/oauth/callback/page.tsx
 import * as entry from '../../../../../app/oauth/callback/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

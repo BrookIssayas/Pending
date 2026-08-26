@@ -3,7 +3,7 @@
 import { useState } from "react";
 import styles from "./login.module.css";
 
-const API_BASE = process.env.API_BASE_URL!;
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL!;
 
 export default function LoginPage() {
   const [loading, setLoading] = useState(false);
@@ -15,8 +15,9 @@ export default function LoginPage() {
 
     try {
       const redirectUrl = `${window.location.origin}/oauth/callback`;
-
-      const res = await fetch(`${API_BASE}/auth/oauth/login`, {
+      
+      console.log(new URL("/auth/oauth/login", API_BASE))
+      const res = await fetch(new URL("/auth/oauth/login", API_BASE), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

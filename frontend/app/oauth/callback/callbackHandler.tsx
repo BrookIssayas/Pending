@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { supabase } from "@/lib/supabase-client";
 
-const API_BASE = process.env.API_BASE_URL!;
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL!;
 
 export function CallbackHandler() {
   const router = useRouter();
@@ -24,7 +24,7 @@ export function CallbackHandler() {
 
     async function exchangeCode() {
       try {
-        const res = await fetch(`${API_BASE}/auth/oauth/callback`, {
+        const res = await fetch(new URL("/auth/oauth/login", API_BASE), {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ provider: "google", code, redirect_url: redirectUrl }),
