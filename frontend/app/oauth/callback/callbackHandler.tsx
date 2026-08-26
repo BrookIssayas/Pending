@@ -24,21 +24,23 @@ export function CallbackHandler() {
 
     async function exchangeCode() {
       try {
-        const res = await fetch(`${API_BASE}/auth/oauth/login`, {
+        const res = await fetch(`${API_BASE}/auth/oauth/callback`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ provider: "google", code, redirect_url: redirectUrl }),
         });
 
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
-
+        
         const data = await res.json();
+        console.log(data)
         const { access_token, refresh_token } = data.token;
-
+        
         const { error: sessionError } = await supabase.auth.setSession({
           access_token,
           refresh_token,
         });
+
         if (sessionError) throw sessionError;
 
         router.replace("/dashboard");
