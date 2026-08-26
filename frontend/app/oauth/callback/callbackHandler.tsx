@@ -29,11 +29,14 @@ export function CallbackHandler() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ provider: "google", code, redirect_url: redirectUrl }),
         });
-
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
         
+        if (!res.ok) {
+            const errorBody = await res.text();
+            console.error("OAuth callback failed:", res.status, errorBody);
+            throw new Error(`HTTP ${res.status}`);
+        }
+
         const data = await res.json();
-        console.log(data)
         const { access_token, refresh_token } = data.token;
         
         const { error: sessionError } = await supabase.auth.setSession({

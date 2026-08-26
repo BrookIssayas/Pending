@@ -28,6 +28,7 @@ export default function LoginPage() {
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
       const data = await res.json();
+
       window.location.href = data.auth_url; // hand off to Google
     } catch (err) {
       setLoading(false);
