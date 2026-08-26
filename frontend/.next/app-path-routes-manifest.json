@@ -1,7 +1,0 @@
-{
-  "/_not-found/page": "/_not-found",
-  "/login/page": "/login",
-  "/page": "/",
-  "/dashboard/page": "/dashboard",
-  "/oauth/callback/page": "/oauth/callback"
-}

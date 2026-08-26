@@ -24,7 +24,7 @@ export function CallbackHandler() {
 
     async function exchangeCode() {
       try {
-        const res = await fetch(new URL("/auth/oauth/login", API_BASE), {
+        const res = await fetch(`${API_BASE}/auth/oauth/login`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ provider: "google", code, redirect_url: redirectUrl }),

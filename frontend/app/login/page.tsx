@@ -16,8 +16,7 @@ export default function LoginPage() {
     try {
       const redirectUrl = `${window.location.origin}/oauth/callback`;
       
-      console.log(new URL("/auth/oauth/login", API_BASE))
-      const res = await fetch(new URL("/auth/oauth/login", API_BASE), {
+      const res = await fetch(`${API_BASE}/auth/oauth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
