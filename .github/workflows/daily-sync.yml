@@ -2,20 +2,26 @@ name: Daily Email Sync
 
 on:
   schedule:
-    - cron: '0 0 * * *' 
+    - cron: '0 0 * * *'
   workflow_dispatch:
 
 jobs:
   sync:
     runs-on: ubuntu-latest
     timeout-minutes: 15
+
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - run: pip install -r backend/requirements.txt
-      - run: python -m backend.app.scripts.run_daily_sync
+
+      - run: pip install -r requirements.txt
+        working-directory: backend
+
+      - run: python -m app.scripts.run_daily_sync
+        working-directory: backend
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
