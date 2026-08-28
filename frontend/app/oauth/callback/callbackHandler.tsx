@@ -3,22 +3,18 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase-client";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL!;
 
 export function CallbackHandler() {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const code = searchParams.get("code");
-    if (!code) {
-      setError("Please allow Google permissions when logging in.");
-      return;
-    }
+    const urlParams = new URLSearchParams(window.location.search);
+    const code = urlParams.get("code")
 
     const redirectUrl = `${window.location.origin}/oauth/callback`;
 
@@ -53,7 +49,7 @@ export function CallbackHandler() {
     }
 
     exchangeCode();
-  }, [searchParams, router]);
+  }, [router]);
 
   if (error) {
     return (
