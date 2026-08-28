@@ -17,7 +17,7 @@ const plexSans = IBM_Plex_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "TBD — status board",
+  title: "Pending",
   description: "Every job application, tracked until it isn't pending anymore.",
 };
 

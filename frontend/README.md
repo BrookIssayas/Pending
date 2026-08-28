@@ -1,4 +1,4 @@
-# TBD — status board
+# Pending
 
 Next.js frontend for the job application tracker. Shows every detected
 application, filterable by status, with an animated split-flap status
