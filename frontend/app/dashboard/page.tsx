@@ -63,8 +63,7 @@ export default function DashboardPage() {
     <main className={styles.wrap}>
       <header className={styles.header}>
         <div>
-          <p className={styles.eyebrow}>status board</p>
-          <h1 className={styles.wordmark}>TBD</h1>
+          <h1 className={styles.wordmark}>Pending</h1>
         </div>
         <button type="button" className={styles.signOut} onClick={handleSignOut}>
           SIGN OUT
