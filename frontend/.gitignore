@@ -13,6 +13,16 @@
 *.venv
 *.env*.local
 
+# dependencies
+/node_modules
+
+# next.js build output
+/.next/
+/out/
+
+# production build
+/build
+
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
