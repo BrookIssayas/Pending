@@ -104,13 +104,13 @@ class GmailService:
             return await asyncio.to_thread(_list_all)
         except HttpError as error:
             logger.error("Error listing messages for user %s: %s", self.user_id, error)
-            return []
+            raise
         except RefreshError as error:
             logger.warning(
                 "Google token refresh failed for user %s (likely revoked): %s",
                 self.user_id, error,
             )
-            return []
+            raise
 
     async def _fetch_messages_in_batches(self, message_ids: list[str]) -> tuple[list[dict], list[str]]:
         """Fetch messages via batch requests, retrying retryable failures with backoff."""
