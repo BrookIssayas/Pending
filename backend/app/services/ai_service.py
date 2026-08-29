@@ -16,6 +16,11 @@ logger = logging.getLogger(__name__)
 MODEL_NAME = "gemini-3.6-flash"
 CHUNK_SIZE = 20
 
+GEMINI_RETRY_ATTEMPTS = 3  
+GEMINI_RETRY_INITIAL_DELAY = 1.0  
+GEMINI_RETRY_MAX_DELAY = 60.0  
+GEMINI_RETRY_STATUS_CODES = [500, 502, 503, 504]
+
 
 class Pass1Item(BaseModel):
     user_id: str
@@ -54,7 +59,17 @@ class AIService:
     def __init__(self):
         settings = get_settings()
         self.repo = get_job_app_repo()
-        self.client = genai.Client(api_key=settings.GEMINI_API_KEY)
+        self.client = genai.Client(
+            api_key=settings.GEMINI_API_KEY,
+            http_options=types.HttpOptions(
+                retry_options=types.HttpRetryOptions(
+                    attempts=GEMINI_RETRY_ATTEMPTS,
+                    initial_delay=GEMINI_RETRY_INITIAL_DELAY,
+                    max_delay=GEMINI_RETRY_MAX_DELAY,
+                    http_status_codes=GEMINI_RETRY_STATUS_CODES,
+                ),
+            ),
+        )
 
     async def classify_users_in_chunks(
         self, user_emails: dict[str, list[dict]], chunk_size: int = CHUNK_SIZE
