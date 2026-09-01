@@ -3,6 +3,7 @@ import asyncio
 import logging
 from datetime import datetime, timezone
 from typing import Literal, Optional
+from urllib import response
 
 from google import genai
 from google.genai import types
@@ -15,6 +16,11 @@ logger = logging.getLogger(__name__)
 
 MODEL_NAME = "gemini-3.6-flash"
 CHUNK_SIZE = 20
+
+GEMINI_RETRY_ATTEMPTS = 3  
+GEMINI_RETRY_INITIAL_DELAY = 1.0  
+GEMINI_RETRY_MAX_DELAY = 60.0  
+GEMINI_RETRY_STATUS_CODES = [500, 502, 503, 504]
 
 
 class Pass1Item(BaseModel):
@@ -54,7 +60,17 @@ class AIService:
     def __init__(self):
         settings = get_settings()
         self.repo = get_job_app_repo()
-        self.client = genai.Client(api_key=settings.GEMINI_API_KEY)
+        self.client = genai.Client(
+            api_key=settings.GEMINI_API_KEY,
+            http_options=types.HttpOptions(
+                retry_options=types.HttpRetryOptions(
+                    attempts=GEMINI_RETRY_ATTEMPTS,
+                    initial_delay=GEMINI_RETRY_INITIAL_DELAY,
+                    max_delay=GEMINI_RETRY_MAX_DELAY,
+                    http_status_codes=GEMINI_RETRY_STATUS_CODES,
+                ),
+            ),
+        )
 
     async def classify_users_in_chunks(
         self, user_emails: dict[str, list[dict]], chunk_size: int = CHUNK_SIZE
@@ -177,9 +193,13 @@ class AIService:
                     response_schema=list[Pass1Item],
                 ),
             )
-            return response.parsed or []
 
-        return await asyncio.to_thread(_call)
+            if response.parsed is None:
+                raise ValueError(
+                    f"Pass 1 returned no parsed output "
+                    f"(finish_reason={getattr(response.candidates[0], 'finish_reason', 'unknown') if response.candidates else 'no candidates'})"
+                )
+            return response.parsed
 
     async def _run_pass2(self, groups: list[dict]) -> Optional[Pass2Response]:
         blocks = []
@@ -235,7 +255,13 @@ class AIService:
                     response_schema=Pass2Response,
                 ),
             )
+            if response.parsed is None:
+                            raise ValueError(
+                                f"Pass 1 returned no parsed output "
+                                f"(finish_reason={getattr(response.candidates[0], 'finish_reason', 'unknown') if response.candidates else 'no candidates'})"
+                            )
             return response.parsed
+
 
         return await asyncio.to_thread(_call)
 
