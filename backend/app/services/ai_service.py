@@ -3,8 +3,6 @@ import asyncio
 import logging
 from datetime import datetime, timezone
 from typing import Literal, Optional
-from urllib import response
-
 from google import genai
 from google.genai import types
 from pydantic import BaseModel
@@ -200,6 +198,7 @@ class AIService:
                     f"(finish_reason={getattr(response.candidates[0], 'finish_reason', 'unknown') if response.candidates else 'no candidates'})"
                 )
             return response.parsed
+        return await asyncio.to_thread(_call)
 
     async def _run_pass2(self, groups: list[dict]) -> Optional[Pass2Response]:
         blocks = []
@@ -257,7 +256,7 @@ class AIService:
             )
             if response.parsed is None:
                             raise ValueError(
-                                f"Pass 1 returned no parsed output "
+                                f"Pass 2 returned no parsed output "
                                 f"(finish_reason={getattr(response.candidates[0], 'finish_reason', 'unknown') if response.candidates else 'no candidates'})"
                             )
             return response.parsed
