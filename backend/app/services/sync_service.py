@@ -37,10 +37,10 @@ class UserEmailSyncStateService:
             row = None
 
         if row and row.get("last_synced_at"):
-            return datetime.fromisoformat(row["last_synced_at"])
-            # return datetime.now(timezone.utc) - timedelta(days=DEFAULT_BACKFILL_DAYS)
+            if datetime.fromisoformat(row["last_synced_at"]) < datetime.now(timezone.utc) - timedelta(days=DEFAULT_BACKFILL_DAYS):
+                return datetime.fromisoformat(row["last_synced_at"])
 
-        # No prior sync — first run for this user, backfill a default window
+        # No prior sync or last sync is too old, so return a default backfill window
         return datetime.now(timezone.utc) - timedelta(days=DEFAULT_BACKFILL_DAYS)
 
     async def mark_synced(
