@@ -36,7 +36,7 @@ export async function fetchApplications(
 ): Promise<JobApplication[]> {
   const {
     data: { session },
-  } = await supabase.auth.getSession();
+  } = await supabase.auth.getUser();
 
   if (!session) {
     throw new NotAuthenticatedError();
