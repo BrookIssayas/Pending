@@ -10,8 +10,8 @@ spreadsheet tracking required.
 **Backend is fully functional.** Gmail ingestion, two-pass Gemini
 classification, status tracking, and the API are all working end to end.
 
-**Frontend is a prototype.** It's enough to log in and see your applications,
-but it's not the real interface — a proper frontend is planned for later.
+**Frontend is W.I.P.** It's enough to log in and see your applications,
+more features in the future might be available.
 
 ## How it works
 
@@ -67,7 +67,7 @@ python -m uvicorn app.api.main:app --reload --port 8000
 
 `https://pending-backend-ten.vercel.app`
 
-## Frontend (prototype)
+## Frontend
 
 ### Setup
 
