@@ -39,6 +39,7 @@ export default function DashboardPage() {
         setApplications(data);
       } catch (err) {
         if (err instanceof NotAuthenticatedError) {
+          await supabase.auth.signOut();
           router.replace("/login");
           return;
         }
