@@ -37,8 +37,8 @@ class UserEmailSyncStateService:
             row = None
 
         if row and row.get("last_synced_at"):
-            last_synced = datetime.fromisoformat(row["last_synced_at"])
-            return max(last_synced, datetime.now(timezone.utc) - timedelta(days=DEFAULT_BACKFILL_DAYS))
+            if datetime.fromisoformat(row["last_synced_at"]) < datetime.now(timezone.utc) - timedelta(days=DEFAULT_BACKFILL_DAYS):
+                return datetime.fromisoformat(row["last_synced_at"])
 
         # No prior sync or last sync is too old, so return a default backfill window
         return datetime.now(timezone.utc) - timedelta(days=DEFAULT_BACKFILL_DAYS)
@@ -86,6 +86,32 @@ class UserEmailSyncStateService:
             await asyncio.to_thread(_upsert_status_only)
         except Exception as error:
             logger.error("Failed to mark sync failure for user %s: %s", user_id, error)
+
+
+    async def get_last_sync_time(self, user_id: str) -> datetime | None:
+        """Returns this user's most recent successful sync, or None if
+        they've never synced. Deliberately per-user, not global — a
+        failed chunk for this user shouldn't be masked by other users'
+        successful chunks in the same run.
+        """
+        def _get_latest() -> dict | None:
+            response = (
+                self.client.table("user_email_sync_state")
+                .select("last_synced_at")
+                .eq("user_id", user_id)
+                .eq("last_sync_status", "success")
+                .maybe_single()
+                .execute()
+            )
+            return response.data if response else None
+
+        try:
+            row = await asyncio.to_thread(_get_latest)
+        except Exception as error:
+            logger.error("Failed to fetch last sync time for user %s: %s", user_id, error)
+            return None
+
+        return datetime.fromisoformat(row["last_synced_at"]) if row and row.get("last_synced_at") else None
 
 def get_sync_service() -> UserEmailSyncStateService:
     """Returns a singleton instance of the SyncService."""

@@ -35,14 +35,6 @@ export async function fetchApplications(
   status?: ApplicationStatus
 ): Promise<JobApplication[]> {
   const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    throw new NotAuthenticatedError();
-  }
-
-  const {
     data: { session },
   } = await supabase.auth.getSession();
 
@@ -67,6 +59,36 @@ export async function fetchApplications(
 
   if (!response.ok) {
     throw new Error(`Failed to fetch applications: ${response.status}`);
+  }
+
+  return response.json();
+}
+export interface NextRefreshResponse {
+  next_sync_at: string;
+  last_synced_at: string | null;
+}
+
+export async function fetchNextSyncTime(): Promise<NextRefreshResponse> {
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  if (!session) {
+    throw new NotAuthenticatedError();
+  }
+
+  const response = await fetch(`${API_BASE_URL}/sync/next-refresh`, {
+    headers: {
+      Authorization: `Bearer ${session.access_token}`,
+    },
+  });
+
+  if (response.status === 401) {
+    throw new NotAuthenticatedError();
+  }
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch next sync time: ${response.status}`);
   }
 
   return response.json();
