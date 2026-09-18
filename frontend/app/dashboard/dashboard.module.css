@@ -11,6 +11,15 @@
   margin-bottom: 32px;
 }
 
+.eyebrow {
+  font-family: var(--font-board);
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--board-ink-dim);
+  margin: 0 0 4px;
+}
+
 .wordmark {
   font-family: var(--font-board);
   font-size: 32px;
@@ -53,3 +62,4 @@
   padding: 40px 0;
   text-align: center;
 }
+.headerActions { display: flex; align-items: center; gap: 1rem; }
