@@ -2,7 +2,7 @@ name: Daily Email Sync
 
 on:
   schedule:
-    - cron: '0 17 * * *'
+    - cron: '22 11 * * *'
       timezone: 'America/Los_Angeles'
   workflow_dispatch:
 
