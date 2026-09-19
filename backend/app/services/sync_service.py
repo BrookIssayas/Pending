@@ -37,8 +37,8 @@ class UserEmailSyncStateService:
             row = None
 
         if row and row.get("last_synced_at"):
-            if datetime.fromisoformat(row["last_synced_at"]) < datetime.now(timezone.utc) - timedelta(days=DEFAULT_BACKFILL_DAYS):
-                return datetime.fromisoformat(row["last_synced_at"])
+            last_synced = datetime.fromisoformat(row["last_synced_at"])
+            return max(last_synced, datetime.now(timezone.utc) - timedelta(days=DEFAULT_BACKFILL_DAYS))
 
         # No prior sync or last sync is too old, so return a default backfill window
         return datetime.now(timezone.utc) - timedelta(days=DEFAULT_BACKFILL_DAYS)
