@@ -66,7 +66,7 @@ export default function DashboardPage() {
       <header className={styles.header}>
         <div>
           <p className={styles.eyebrow}>status board</p>
-          <h1 className={styles.wordmark}>TBD</h1>
+          <h1 className={styles.wordmark}>Pending</h1>
         </div>
         <div className={styles.headerActions}>
           <SyncCountdown />
