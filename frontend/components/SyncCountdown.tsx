@@ -69,7 +69,10 @@ export function SyncCountdown() {
     const interval = setInterval(tick, 1000);
     return () => {
       clearInterval(interval);
-      if (pollingRef.current) clearInterval(pollingRef.current);
+      if (pollingRef.current) {
+        clearInterval(pollingRef.current);
+        pollingRef.current = null;
+      }
     };
   }, [nextSyncAt]);
 
