@@ -28,7 +28,7 @@ export default function DashboardPage() {
   const [activeStatus, setActiveStatus] = useState<StatusFilter>("All");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
+  
   const load = useCallback(
     async (status: StatusFilter) => {
       setLoading(true);
@@ -69,7 +69,7 @@ export default function DashboardPage() {
           <h1 className={styles.wordmark}>Pending</h1>
         </div>
         <div className={styles.headerActions}>
-          <SyncCountdown />
+          <SyncCountdown onSyncComplete={() => load(activeStatus)} />
           <button type="button" className={styles.signOut} onClick={handleSignOut}>
             SIGN OUT
           </button>

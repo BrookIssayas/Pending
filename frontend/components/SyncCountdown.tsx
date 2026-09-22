@@ -1,13 +1,12 @@
 // components/SyncCountdown.tsx
-// CHANGED: once the countdown hits zero, polls next-refresh every 30s
-// until last_synced_at actually advances, instead of freezing on
-// "syncing now" indefinitely.
+// CHANGED: added onSyncComplete prop, called exactly once when polling
+// detects last_synced_at actually advanced — lets the parent (dashboard)
+// refetch its data instead of only updating this component's own timer.
 
 "use client";
 
 import { useEffect, useRef, useState } from "react";
 import { fetchNextSyncTime } from "@/lib/api";
-import { supabase } from "@/lib/supabase-client";
 
 const POLL_INTERVAL_MS = 30_000;
 
@@ -22,24 +21,28 @@ function formatRemaining(ms: number): string {
     .join(":");
 }
 
-export function SyncCountdown() {
+interface SyncCountdownProps {
+  onSyncComplete?: () => void;
+}
+
+export function SyncCountdown({ onSyncComplete }: SyncCountdownProps) {
   const [nextSyncAt, setNextSyncAt] = useState<Date | null>(null);
   const [lastSyncedAt, setLastSyncedAt] = useState<string | null>(null);
   const [remaining, setRemaining] = useState<string>("");
   const pollingRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  const refetch = async () => {
-    console.log((await supabase.auth.getSession()).data.session?.access_token)
+  const refetch = () => {
     fetchNextSyncTime()
       .then((data) => {
         setNextSyncAt(new Date(data.next_sync_at));
         setLastSyncedAt((prev) => {
-          if (data.last_synced_at && data.last_synced_at !== prev) {
-            // sync actually advanced — stop polling
+          const advanced = data.last_synced_at && data.last_synced_at !== prev;
+          if (advanced) {
             if (pollingRef.current) {
               clearInterval(pollingRef.current);
               pollingRef.current = null;
             }
+            onSyncComplete?.();
           }
           return data.last_synced_at;
         });
